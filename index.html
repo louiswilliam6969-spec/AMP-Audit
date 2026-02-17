@@ -161,15 +161,18 @@
         }
 
         function openModal(name) {
-            const a = audits.find(item => item.Name === name);
-            if (!a) return;
-            document.getElementById('modalTitle').innerText = a.Name;
-            document.getElementById('modalPartner').innerText = a.Partner;
-            document.getElementById('modalDesc').innerText = a.Description || "Project documentation.";
-            
-            const folderBtn = document.getElementById('modalFolder');
-            folderBtn.href = a.Folder || "#";
-            folderBtn.target = "_blank";
+    const a = audits.find(item => item.Name === name);
+    if (!a) return;
+    
+    document.getElementById('modalTitle').innerText = a.Name;
+    document.getElementById('modalPartner').innerText = a.Partner;
+    
+    // ADD THIS PART TO SHOW DEADLINE INSIDE
+    const deadlineText = a.Deadline ? ` | Deadline: ${a.Deadline}` : "";
+    document.getElementById('modalDesc').innerText = (a.Description || "Project documentation.") + deadlineText;
+
+    document.getElementById('modalFolder').href = a.Folder || "#";
+    document.getElementById('modalReport').href = a.Report || "#";
 
             const reportBtn = document.getElementById('modalReport');
             reportBtn.href = a.Report || "#";
