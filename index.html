@@ -11,7 +11,6 @@
         .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
         .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); }
         .tab-active { border-bottom: 3px solid #3b82f6; color: #3b82f6; font-weight: bold; }
-        .hidden { display: none !important; }
     </style>
 </head>
 <body class="bg-slate-100 font-sans min-h-screen text-slate-900">
@@ -19,7 +18,7 @@
     <nav class="gradient-bg p-6 text-white shadow-lg mb-8">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <h1 class="text-2xl font-light tracking-widest uppercase">AMP<span class="font-bold text-blue-400">Audits</span></h1>
-            <div class="text-sm opacity-80 font-medium tracking-tight">Partner Portal v3.5</div>
+            <div class="text-sm opacity-80 font-medium tracking-tight">Partner Portal v4.0</div>
         </div>
     </nav>
 
@@ -46,7 +45,7 @@
         </div>
 
         <div id="auditContainer" class="grid grid-cols-1 gap-4 pb-12">
-            <div class="p-20 text-center text-slate-400 italic">Connecting to Database...</div>
+            <div class="p-20 text-center text-slate-400 italic">Syncing with Google Sheets...</div>
         </div>
     </div>
 
@@ -78,9 +77,9 @@
                             <span class="flex items-center gap-3"><i class="fas fa-folder-open text-amber-500 text-xl"></i><span class="font-bold text-sm">Working Folder</span></span>
                             <i class="fas fa-external-link-alt text-slate-300 group-hover:text-blue-500 text-xs"></i>
                         </a>
-                        <a id="modalReport" href="#" target="_blank" class="flex items-center justify-between w-full p-4 bg-white rounded-xl border border-slate-200 hover:border-red-500 hover:shadow-md transition group text-slate-700">
-                            <span class="flex items-center gap-3"><i class="fas fa-file-invoice text-red-500 text-xl"></i><span class="font-bold text-sm">Final Audit Report</span></span>
-                            <i class="fas fa-external-link-alt text-slate-300 group-hover:text-red-500 text-xs"></i>
+                        <a id="modalReport" href="#" download class="flex items-center justify-between w-full p-4 bg-white rounded-xl border border-slate-200 hover:border-red-500 hover:shadow-md transition group text-slate-700">
+                            <span class="flex items-center gap-3"><i class="fas fa-file-excel text-green-600 text-xl"></i><span class="font-bold text-sm">Download Audit Report</span></span>
+                            <i class="fas fa-download text-slate-300 group-hover:text-red-500 text-xs"></i>
                         </a>
                     </div>
                 </div>
@@ -89,20 +88,15 @@
     </div>
 
     <script>
-        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzRvrcfqkjoBoST2eTpRJx6lpDvn8PwT1TKpJ8udSEt4K7RfRDPLaRnA6v3CqxyVw1smxHMg2xj-Wf/pub?output=csv'; // Ensure link ends in &output=csv
+        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzRvrcfqkjoBoST2eTpRJx6lpDvn8PwT1TKpJ8udSEt4K7RfRDPLaRnA6v3CqxyVw1smxHMg2xj-Wf/pub?output=csv'; // Replace with CSV link
 
         let audits = [];
         let currentTab = 'ALL';
 
         function loadData() {
             Papa.parse(sheetUrl, {
-                download: true,
-                header: true,
-                skipEmptyLines: true,
-                complete: function(results) {
-                    audits = results.data;
-                    render();
-                }
+                download: true, header: true, skipEmptyLines: true,
+                complete: function(results) { audits = results.data; render(); }
             });
         }
 
@@ -111,8 +105,7 @@
             const deadline = new Date(deadlineStr);
             const today = new Date();
             today.setHours(0,0,0,0);
-            const diffTime = deadline - today;
-            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
         }
 
         function render() {
@@ -125,18 +118,12 @@
             });
 
             document.getElementById('totalCount').innerText = filtered.length;
-
             container.innerHTML = filtered.map(a => {
                 const daysLeft = getDaysRemaining(a.Deadline);
-                let deadlineBadge = '';
-
-                // Overdue logic only for Pending audits
+                let badge = '';
                 if (a.Status === 'Pending' && daysLeft !== null) {
-                    if (daysLeft < 0) {
-                        deadlineBadge = `<span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-bold uppercase ml-2">OVERDUE</span>`;
-                    } else {
-                        deadlineBadge = `<span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-bold uppercase ml-2">${daysLeft} Days Left</span>`;
-                    }
+                    badge = daysLeft < 0 ? `<span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-bold ml-2">OVERDUE</span>` 
+                                         : `<span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-bold ml-2">${daysLeft} Days Left</span>`;
                 }
 
                 return `
@@ -145,7 +132,7 @@
                         <div class="flex items-center gap-3 mb-1">
                             <h3 class="text-xl font-bold text-slate-800 group-hover:text-blue-600 transition">${a.Name}</h3>
                             <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${a.Status === 'Completed' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}">${a.Status}</span>
-                            ${deadlineBadge}
+                            ${badge}
                         </div>
                         <p class="text-slate-400 text-sm">Partner: ${a.Partner} | ${a.Date}</p>
                     </div>
@@ -167,15 +154,16 @@
             if (!a) return;
             document.getElementById('modalTitle').innerText = a.Name;
             document.getElementById('modalPartner').innerText = a.Partner;
+            document.getElementById('modalDeadlineInfo').innerText = a.Deadline ? `| Target: ${a.Deadline}` : "";
+            document.getElementById('modalDesc').innerText = a.Description || "Firm audit documentation.";
             
-            // Show Deadline inside Modal
-            const deadlineInfo = document.getElementById('modalDeadlineInfo');
-            deadlineInfo.innerText = a.Deadline ? `| Target: ${a.Deadline}` : "";
-            
-            document.getElementById('modalDesc').innerText = a.Description || "Project documentation and compliance records.";
             document.getElementById('modalFolder').href = a.Folder || "#";
-            document.getElementById('modalReport').href = a.Report || "#";
             
+            // DOWNLOAD LOGIC: Forced via OneDrive direct link
+            const reportBtn = document.getElementById('modalReport');
+            reportBtn.href = a.Report || "#";
+            reportBtn.setAttribute('download', `${a.Name}_Audit_Report.xlsx`);
+
             const team = a.Team ? a.Team.split(',') : [];
             document.getElementById('modalTeam').innerHTML = team.map(n => `
                 <div class="text-center">
@@ -186,7 +174,6 @@
         }
 
         function closeModal() { document.getElementById('projectModal').classList.add('hidden'); }
-        window.onclick = (e) => { if(e.target == document.getElementById('projectModal')) closeModal(); }
         window.onload = loadData;
     </script>
 </body>
