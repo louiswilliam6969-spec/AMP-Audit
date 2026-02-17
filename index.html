@@ -18,7 +18,7 @@
     <nav class="gradient-bg p-6 text-white shadow-lg mb-8">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <h1 class="text-2xl font-light tracking-widest uppercase">AMP<span class="font-bold text-blue-400">Audits</span></h1>
-            <div class="text-sm opacity-80 font-medium">Partner Portal v4.2</div>
+            <div class="text-sm opacity-80 font-medium">Partner Portal v4.3</div>
         </div>
     </nav>
 
@@ -61,7 +61,7 @@
                         <p id="modalDesc" class="text-slate-700 italic">--</p>
                     </section>
                     <section>
-                        <h4 class="text-slate-400 uppercase text-xs font-bold mb-3">Team</h4>
+                        <h4 class="text-slate-400 uppercase text-xs font-bold mb-3">Engagement Team</h4>
                         <div id="modalTeam" class="flex gap-4"></div>
                     </section>
                 </div>
@@ -132,8 +132,14 @@
             document.getElementById('modalTarget').innerText = a.Deadline ? `| Target: ${a.Deadline}` : "";
             document.getElementById('modalDesc').innerText = a.Description || "Firm documentation.";
             
-            document.getElementById('modalFolder').href = a.Folder || "#";
-            document.getElementById('modalReport').href = a.Report || "#";
+            // Critical Fix: Ensures links open in new tab
+            const folderLink = document.getElementById('modalFolder');
+            folderLink.href = a.Folder || "#";
+            folderLink.target = "_blank";
+
+            const reportLink = document.getElementById('modalReport');
+            reportLink.href = a.Report || "#";
+            reportLink.target = "_blank";
             
             document.getElementById('modalTeam').innerHTML = (a.Team ? a.Team.split(',') : []).map(n => `
                 <div class="text-center">
@@ -144,6 +150,7 @@
         }
 
         function closeModal() { document.getElementById('projectModal').classList.add('hidden'); }
+        window.onclick = (e) => { if(e.target == document.getElementById('projectModal')) closeModal(); }
         window.onload = loadData;
     </script>
 </body>
