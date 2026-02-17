@@ -18,68 +18,63 @@
     <nav class="gradient-bg p-6 text-white shadow-lg mb-8">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <h1 class="text-2xl font-light tracking-widest uppercase">AMP<span class="font-bold text-blue-400">Audits</span></h1>
-            <div class="text-sm opacity-80 font-medium tracking-tight">Partner Portal v4.0</div>
+            <div class="text-sm opacity-80 font-medium">Partner Portal v4.2</div>
         </div>
     </nav>
 
     <div class="max-w-7xl mx-auto px-4">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="md:col-span-2 relative">
-                <input type="text" id="auditSearch" onkeyup="render()" placeholder="Search clients or partners..." 
+                <input type="text" id="auditSearch" onkeyup="render()" placeholder="Search clients..." 
                     class="w-full pl-12 pr-4 py-4 rounded-2xl border-none shadow-sm focus:ring-2 focus:ring-blue-500 text-lg">
                 <i class="fas fa-search absolute left-4 top-5 text-slate-300 text-xl"></i>
             </div>
             <div class="bg-blue-600 rounded-2xl p-4 text-white flex items-center justify-between shadow-lg">
                 <div>
-                    <p class="text-xs uppercase opacity-70 font-bold tracking-wider">Active Engagements</p>
+                    <p class="text-xs uppercase opacity-70 font-bold">Active Engagements</p>
                     <p id="totalCount" class="text-2xl font-bold">0</p>
                 </div>
-                <i class="fas fa-stopwatch text-3xl opacity-30"></i>
+                <i class="fas fa-database text-3xl opacity-30"></i>
             </div>
         </div>
 
         <div class="flex gap-8 mb-6 border-b border-slate-200 px-2">
-            <button onclick="setTab('ALL')" id="tabALL" class="pb-3 text-sm uppercase tracking-wider tab-active transition-all">All Audits</button>
-            <button onclick="setTab('Completed')" id="tabCompleted" class="pb-3 text-sm uppercase tracking-wider text-slate-500 transition-all">Completed</button>
-            <button onclick="setTab('Pending')" id="tabPending" class="pb-3 text-sm uppercase tracking-wider text-slate-500 transition-all">In Progress</button>
+            <button onclick="setTab('ALL')" id="tabALL" class="pb-3 text-sm tab-active">All Audits</button>
+            <button onclick="setTab('Completed')" id="tabCompleted" class="pb-3 text-sm text-slate-500">Completed</button>
+            <button onclick="setTab('Pending')" id="tabPending" class="pb-3 text-sm text-slate-500">In Progress</button>
         </div>
 
-        <div id="auditContainer" class="grid grid-cols-1 gap-4 pb-12">
-            <div class="p-20 text-center text-slate-400 italic">Syncing with Google Sheets...</div>
-        </div>
+        <div id="auditContainer" class="grid grid-cols-1 gap-4 pb-12"></div>
     </div>
 
     <div id="projectModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden relative">
             <div class="gradient-bg p-8 text-white">
                 <button onclick="closeModal()" class="absolute top-6 right-6 text-2xl opacity-50 hover:opacity-100">&times;</button>
-                <h2 id="modalTitle" class="text-3xl font-bold mb-2 uppercase tracking-tight">--</h2>
-                <div class="flex items-center gap-4 text-sm opacity-80">
-                    <span><i class="far fa-user mr-2"></i>Partner: <span id="modalPartner">--</span></span>
-                    <span id="modalDeadlineInfo" class="ml-4 font-bold text-blue-300"></span>
-                </div>
+                <h2 id="modalTitle" class="text-3xl font-bold mb-2 uppercase">--</h2>
+                <div class="text-sm opacity-80">Partner: <span id="modalPartner">--</span> <span id="modalTarget" class="ml-4 font-bold text-blue-300"></span></div>
             </div>
             <div class="p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="md:col-span-2 space-y-6">
                     <section>
-                        <h4 class="text-slate-400 uppercase text-xs font-bold tracking-widest mb-3">Audit Details</h4>
-                        <p id="modalDesc" class="text-slate-700 leading-relaxed text-sm italic">--</p>
+                        <h4 class="text-slate-400 uppercase text-xs font-bold mb-3">Audit Details</h4>
+                        <p id="modalDesc" class="text-slate-700 italic">--</p>
                     </section>
                     <section>
-                        <h4 class="text-slate-400 uppercase text-xs font-bold tracking-widest mb-3">Team</h4>
+                        <h4 class="text-slate-400 uppercase text-xs font-bold mb-3">Team</h4>
                         <div id="modalTeam" class="flex gap-4"></div>
                     </section>
                 </div>
                 <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
                     <h4 class="text-slate-800 font-bold mb-4">Firm Resources</h4>
                     <div class="space-y-3">
-                        <a id="modalFolder" href="#" target="_blank" class="flex items-center justify-between w-full p-4 bg-white rounded-xl border border-slate-200 hover:border-blue-500 hover:shadow-md transition group text-slate-700">
-                            <span class="flex items-center gap-3"><i class="fas fa-folder-open text-amber-500 text-xl"></i><span class="font-bold text-sm">Working Folder</span></span>
-                            <i class="fas fa-external-link-alt text-slate-300 group-hover:text-blue-500 text-xs"></i>
+                        <a id="modalFolder" href="#" target="_blank" class="flex items-center justify-between w-full p-4 bg-white rounded-xl border border-slate-200 hover:border-blue-500 hover:shadow-md transition text-slate-700">
+                            <span class="flex items-center gap-3"><i class="fas fa-folder-open text-amber-500"></i><span class="font-bold text-sm">Working Folder</span></span>
+                            <i class="fas fa-external-link-alt text-xs opacity-30"></i>
                         </a>
-                        <a id="modalReport" href="#" download class="flex items-center justify-between w-full p-4 bg-white rounded-xl border border-slate-200 hover:border-red-500 hover:shadow-md transition group text-slate-700">
-                            <span class="flex items-center gap-3"><i class="fas fa-file-excel text-green-600 text-xl"></i><span class="font-bold text-sm">Download Audit Report</span></span>
-                            <i class="fas fa-download text-slate-300 group-hover:text-red-500 text-xs"></i>
+                        <a id="modalReport" href="#" target="_blank" class="flex items-center justify-between w-full p-4 bg-white rounded-xl border border-slate-200 hover:border-green-500 hover:shadow-md transition text-slate-700">
+                            <span class="flex items-center gap-3"><i class="fas fa-file-excel text-green-600"></i><span class="font-bold text-sm">Access Audit Report</span></span>
+                            <i class="fas fa-external-link-alt text-xs opacity-30"></i>
                         </a>
                     </div>
                 </div>
@@ -88,87 +83,62 @@
     </div>
 
     <script>
-        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzRvrcfqkjoBoST2eTpRJx6lpDvn8PwT1TKpJ8udSEt4K7RfRDPLaRnA6v3CqxyVw1smxHMg2xj-Wf/pub?output=csv'; // Replace with CSV link
-
-        let audits = [];
-        let currentTab = 'ALL';
+        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzRvrcfqkjoBoST2eTpRJx6lpDvn8PwT1TKpJ8udSEt4K7RfRDPLaRnA6v3CqxyVw1smxHMg2xj-Wf/pub?output=csv'; // Replace with your CSV link
+        let audits = []; let currentTab = 'ALL';
 
         function loadData() {
-            Papa.parse(sheetUrl, {
-                download: true, header: true, skipEmptyLines: true,
-                complete: function(results) { audits = results.data; render(); }
-            });
+            Papa.parse(sheetUrl, { download: true, header: true, skipEmptyLines: true, complete: function(results) { audits = results.data; render(); } });
         }
 
-        function getDaysRemaining(deadlineStr) {
-            if (!deadlineStr) return null;
-            const deadline = new Date(deadlineStr);
-            const today = new Date();
-            today.setHours(0,0,0,0);
-            return Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
+        function getDaysRemaining(deadline) {
+            if (!deadline) return null;
+            return Math.ceil((new Date(deadline) - new Date().setHours(0,0,0,0)) / (1000 * 60 * 60 * 24));
         }
 
         function render() {
             const container = document.getElementById('auditContainer');
             const search = document.getElementById('auditSearch').value.toLowerCase();
-            const filtered = audits.filter(a => {
-                const matchesTab = (currentTab === 'ALL' || a.Status === currentTab);
-                const matchesSearch = (a.Name?.toLowerCase().includes(search) || a.Partner?.toLowerCase().includes(search));
-                return matchesTab && matchesSearch;
-            });
-
+            const filtered = audits.filter(a => (currentTab === 'ALL' || a.Status === currentTab) && (a.Name?.toLowerCase().includes(search) || a.Partner?.toLowerCase().includes(search)));
+            
             document.getElementById('totalCount').innerText = filtered.length;
             container.innerHTML = filtered.map(a => {
-                const daysLeft = getDaysRemaining(a.Deadline);
-                let badge = '';
-                if (a.Status === 'Pending' && daysLeft !== null) {
-                    badge = daysLeft < 0 ? `<span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-bold ml-2">OVERDUE</span>` 
-                                         : `<span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-bold ml-2">${daysLeft} Days Left</span>`;
-                }
-
-                return `
-                <div onclick="openModal('${a.Name.replace(/'/g, "\\'")}')" class="glass p-8 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer flex justify-between items-center border-l-4 ${a.Status === 'Completed' ? 'border-green-500' : 'border-amber-500'} group">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-3 mb-1">
-                            <h3 class="text-xl font-bold text-slate-800 group-hover:text-blue-600 transition">${a.Name}</h3>
+                const days = getDaysRemaining(a.Deadline);
+                let badge = (a.Status === 'Pending' && days !== null) ? (days < 0 ? `<span class="bg-red-100 text-red-600 px-2 py-0.5 rounded-full text-[10px] font-bold ml-2">OVERDUE</span>` : `<span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full text-[10px] font-bold ml-2">${days} Days Left</span>`) : '';
+                
+                return `<div onclick="openModal('${a.Name.replace(/'/g, "\\'")}')" class="glass p-8 rounded-2xl shadow-sm hover:shadow-md transition cursor-pointer flex justify-between items-center border-l-4 ${a.Status === 'Completed' ? 'border-green-500' : 'border-amber-500'} group">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <h3 class="text-xl font-bold text-slate-800">${a.Name}</h3>
                             <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${a.Status === 'Completed' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}">${a.Status}</span>
                             ${badge}
                         </div>
                         <p class="text-slate-400 text-sm">Partner: ${a.Partner} | ${a.Date}</p>
                     </div>
-                    <i class="fas fa-chevron-right text-slate-200 group-hover:text-blue-500 transition-all"></i>
+                    <i class="fas fa-chevron-right text-slate-200 group-hover:text-blue-500 transition"></i>
                 </div>`;
             }).join('');
         }
 
         function setTab(tab) {
             currentTab = tab;
-            ['ALL', 'Completed', 'Pending'].forEach(t => { 
-                document.getElementById('tab'+t).className = (t === tab) ? 'pb-3 text-sm uppercase tracking-wider tab-active' : 'pb-3 text-sm uppercase tracking-wider text-slate-500'; 
-            });
+            ['ALL', 'Completed', 'Pending'].forEach(t => document.getElementById('tab'+t).className = t === tab ? 'pb-3 text-sm tab-active' : 'pb-3 text-sm text-slate-500');
             render();
         }
 
         function openModal(name) {
-            const a = audits.find(item => item.Name === name);
-            if (!a) return;
+            const a = audits.find(item => item.Name === name); if (!a) return;
             document.getElementById('modalTitle').innerText = a.Name;
             document.getElementById('modalPartner').innerText = a.Partner;
-            document.getElementById('modalDeadlineInfo').innerText = a.Deadline ? `| Target: ${a.Deadline}` : "";
-            document.getElementById('modalDesc').innerText = a.Description || "Firm audit documentation.";
+            document.getElementById('modalTarget').innerText = a.Deadline ? `| Target: ${a.Deadline}` : "";
+            document.getElementById('modalDesc').innerText = a.Description || "Firm documentation.";
             
             document.getElementById('modalFolder').href = a.Folder || "#";
+            document.getElementById('modalReport').href = a.Report || "#";
             
-            // DOWNLOAD LOGIC: Forced via OneDrive direct link
-            const reportBtn = document.getElementById('modalReport');
-            reportBtn.href = a.Report || "#";
-            reportBtn.setAttribute('download', `${a.Name}_Audit_Report.xlsx`);
-
-            const team = a.Team ? a.Team.split(',') : [];
-            document.getElementById('modalTeam').innerHTML = team.map(n => `
+            document.getElementById('modalTeam').innerHTML = (a.Team ? a.Team.split(',') : []).map(n => `
                 <div class="text-center">
                     <div class="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 font-bold mb-1 border border-blue-100">${n.trim().charAt(0).toUpperCase()}</div>
-                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">${n.trim()}</p>
+                    <p class="text-[10px] font-bold text-slate-500 uppercase">${n.trim()}</p>
                 </div>`).join('');
             document.getElementById('projectModal').classList.remove('hidden');
         }
